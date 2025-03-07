@@ -295,11 +295,11 @@ class Msf::Payload::Apk
     end
 
     print_status "Decompiling original APK..\n"
-    apktool_output = run_cmd(['apktool', 'd', "#{tempdir}/original.apk", '--only-main-classes', '-o', "#{tempdir}/original"])
+    apktool_output = run_cmd(['apktool', 'd', '-r', '-f', '--use-aapt2' "#{tempdir}/original.apk", '--only-main-classes', '-o', "#{tempdir}/original"])
     check_apktool_output_for_exceptions(apktool_output)
 
     print_status "Decompiling payload APK..\n"
-    apktool_output = run_cmd(['apktool', 'd', "#{tempdir}/payload.apk", '-o', "#{tempdir}/payload"])
+    apktool_output = run_cmd(['apktool', 'd', '-f', '--use-aapt2' "#{tempdir}/payload.apk", '-o', "#{tempdir}/payload"])
     check_apktool_output_for_exceptions(apktool_output)
 
     amanifest = parse_manifest("#{tempdir}/original/AndroidManifest.xml")
@@ -376,7 +376,7 @@ class Msf::Payload::Apk
     end
 
     print_status "Rebuilding apk with meterpreter injection as #{injected_apk}\n"
-    apktool_output = run_cmd(['apktool', 'b', '-o', injected_apk, "#{tempdir}/original"])
+    apktool_output = run_cmd(['apktool', 'b', '--use-aapt2', '-o', injected_apk, "#{tempdir}/original"])
     check_apktool_output_for_exceptions(apktool_output)
 
     unless File.readable?(injected_apk)
